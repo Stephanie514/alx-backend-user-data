@@ -84,8 +84,6 @@ PII_FIELDS = ('field1', 'field2', 'field3', 'field4', 'field5')
 Main file
 """
 
-import os
-import mysql.connector
 
 def get_db():
     """
@@ -123,3 +121,38 @@ if __name__ == "__main__":
     # Close cursor and database connection
     cursor.close()
     db.close()
+
+
+def main():
+    """Main function"""
+    # Connecting to the database
+    db = get_db()
+    cursor = db.cursor()
+
+    # Retrieving user data from the database
+    cursor.execute("SELECT * FROM users;")
+    user_data = cursor.fetchall()
+
+    # Setting up logging
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+
+    # Creating a StreamHandler with RedactingFormatter
+    stream_handler = StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter())
+
+    # Adding the StreamHandler to the logger
+    logger.addHandler(stream_handler)
+
+    # Logging user data
+    for data in user_data:
+        logger.info(f"name={data[0]}; email={data[1]}; phone={data[2]}; "
+                    f"ssn={data[3]}; password={data[4]}; ip={data[5]}; "
+                    f"last_login={data[6]}; user_agent={data[7]}")
+
+    # Closing cursor and database connection
+    cursor.close()
+    db.close()
+
+if __name__ == "__main__":
+    main()
