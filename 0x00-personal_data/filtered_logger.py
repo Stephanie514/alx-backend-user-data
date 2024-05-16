@@ -59,30 +59,27 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger():
     """
-    Create a logger named "user_data" with StreamHandler and RedactingFormatter.
+    Create a logger named "user_data" with StreamHandler
+    and RedactingFormatter.
 
     Returns:
         logging.Logger: The created logger object.
     """
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
-    
+
     # Creating a StreamHandler
     stream_handler = StreamHandler()
     stream_handler.setFormatter(RedactingFormatter(PII_FIELDS))
-    
+
     # Adding the StreamHandler to the logger
     logger.addHandler(stream_handler)
-    
+
     return logger
+
 
 # Reading the  user_data.csv to identify PII field
 PII_FIELDS = ('field1', 'field2', 'field3', 'field4', 'field5')
-
-#!/usr/bin/env python3
-"""
-Main file
-"""
 
 
 def get_db():
@@ -90,7 +87,8 @@ def get_db():
     Connect to the MySQL database using credentials from environment variables.
 
     Returns:
-        mysql.connector.connection.MySQLConnection: The database connector object.
+        mysql.connector.connection.MySQLConnection: The database
+        connector object.
     """
     # Get credentials from environment variables
     db_username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
@@ -106,6 +104,7 @@ def get_db():
         database=db_name
     )
 
+
 if __name__ == "__main__":
     # Connect to the database
     db = get_db()
@@ -113,7 +112,7 @@ if __name__ == "__main__":
     # Execute query
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(*) FROM users;")
-    
+
     # Print results
     for row in cursor:
         print(row[0])
@@ -153,6 +152,7 @@ def main():
     # Closing cursor and database connection
     cursor.close()
     db.close()
+
 
 if __name__ == "__main__":
     main()
