@@ -10,6 +10,11 @@ information in log messages.
 import re
 from typing import List
 import logging
+import csv
+from logging import StreamHandler
+from filtered_logger import RedactingFormatter
+import os
+import mysql.connector
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -50,3 +55,71 @@ class RedactingFormatter(logging.Formatter):
             log_message,
             self.SEPARATOR
         )
+
+
+def get_logger():
+    """
+    Create a logger named "user_data" with StreamHandler and RedactingFormatter.
+
+    Returns:
+        logging.Logger: The created logger object.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    
+    # Creating a StreamHandler
+    stream_handler = StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter(PII_FIELDS))
+    
+    # Adding the StreamHandler to the logger
+    logger.addHandler(stream_handler)
+    
+    return logger
+
+# Reading the  user_data.csv to identify PII field
+PII_FIELDS = ('field1', 'field2', 'field3', 'field4', 'field5')
+
+#!/usr/bin/env python3
+"""
+Main file
+"""
+
+import os
+import mysql.connector
+
+def get_db():
+    """
+    Connect to the MySQL database using credentials from environment variables.
+
+    Returns:
+        mysql.connector.connection.MySQLConnection: The database connector object.
+    """
+    # Get credentials from environment variables
+    db_username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    db_password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    # Connect to the database
+    return mysql.connector.connect(
+        user=db_username,
+        password=db_password,
+        host=db_host,
+        database=db_name
+    )
+
+if __name__ == "__main__":
+    # Connect to the database
+    db = get_db()
+
+    # Execute query
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(*) FROM users;")
+    
+    # Print results
+    for row in cursor:
+        print(row[0])
+
+    # Close cursor and database connection
+    cursor.close()
+    db.close()
