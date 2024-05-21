@@ -7,7 +7,7 @@ from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 import os
-from typing import Literal
+from typing import Tuple
 
 
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(401)
-def unauthorized(error) -> tuple[str, Literal[401]]:
+def unauthorized(error) -> Tuple[str, int]:
     """Handler for 401 errors, returns a JSON response"""
     return jsonify({"error": "Unauthorized"}), 401
 
