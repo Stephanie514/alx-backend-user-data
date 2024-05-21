@@ -28,6 +28,12 @@ def unauthorized(error) -> Tuple[str, int]:
     return jsonify({"error": "Unauthorized"}), 401
 
 
+@app.errorhandler(403)
+def forbidden(error) -> Tuple[str, int]:
+    """Handler for 403 errors, returns a JSON response"""
+    return jsonify({"error": "Forbidden"}), 403
+
+
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
