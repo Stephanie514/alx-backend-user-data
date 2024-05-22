@@ -23,8 +23,8 @@ class BasicAuth(Auth):
         self, authorization_header: str
     ) -> str:
         """
-        Extracts the Base64 part of the Authorization header for
-        Basic Authentication.
+        Extracts the Base64 part of the Authorization header
+        for Basic Authentication.
 
         Args:
             authorization_header (str): The Authorization header string.
@@ -71,16 +71,15 @@ class BasicAuth(Auth):
         self, decoded_base64_authorization_header: str
     ) -> (str, str):
         """
-        Extracts the user email and password from the Base64
-        decoded value.
+        Extracts the user email and password from the Base64 decoded value.
 
         Args:
-            decoded_base64_authorization_header (str):
-            The decoded Base64 string.
+            decoded_base64_authorization_header (str): The decoded
+            Base64 string.
 
         Returns:
-            tuple: The user email and password if valid
-            otherwise (None, None).
+            tuple: The user email and password if valid,
+                   otherwise (None, None).
         """
         if decoded_base64_authorization_header is None or not isinstance(
             decoded_base64_authorization_header, str
