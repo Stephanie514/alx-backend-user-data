@@ -30,8 +30,8 @@ class BasicAuth(Auth):
             authorization_header (str): The Authorization header string.
 
         Returns:
-            str: The Base64 part of the Authorization header
-                 if valid, otherwise None.
+            str: The Base64 part of the Authorization header if valid,
+                 otherwise None.
         """
         if authorization_header is None or not isinstance(
             authorization_header, str
@@ -51,10 +51,12 @@ class BasicAuth(Auth):
         Basic Authentication.
 
         Args:
-            base64_authorization_header (str): The Base64 encoded string.
+            base64_authorization_header (str): The Base64
+            encoded string.
 
         Returns:
-            str: The decoded value as a UTF-8 string if valid, otherwise None.
+            str: The decoded value as a UTF-8 string if valid,
+                 otherwise None.
         """
         if base64_authorization_header is None or not isinstance(
             base64_authorization_header, str
@@ -71,7 +73,8 @@ class BasicAuth(Auth):
         self, decoded_base64_authorization_header: str
     ) -> (str, str):
         """
-        Extracts the user email and password from the Base64 decoded value.
+        Extracts the user email and password from the
+        Base64 decoded value.
 
         Args:
             decoded_base64_authorization_header (str): The decoded
@@ -111,11 +114,13 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
+        # Searching for the user by email
         user_list = User.search({"email": user_email})
         if not user_list:
             return None
 
         user = user_list[0]
+
         if not user.is_valid_password(user_pwd):
             return None
 
