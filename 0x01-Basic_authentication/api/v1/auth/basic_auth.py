@@ -19,7 +19,6 @@ class BasicAuth(Auth):
         # Create an instance of BasicAuth
         basic_auth = BasicAuth()
     """
-
     def extract_base64_authorization_header(
         self, authorization_header: str
     ) -> str:
@@ -106,32 +105,23 @@ class BasicAuth(Auth):
             user_pwd (str): The user's password.
 
         Returns:
-            User: The User instance if found and password is valid,
-                  otherwise None.
+            User: The User instance if found and password i
+                  valid, otherwise None.
         """
         if user_email is None or not isinstance(user_email, str):
-            print("Invalid email")
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
-            print("Invalid password")
             return None
 
-        print(f"Searching for user with email: {user_email}")
         user_list = User.search({"email": user_email})
-        print(f"Search result: {user_list}")
-
         if not user_list:
-            print("No user found")
             return None
 
         user = user_list[0]
-        print(f"Found user: {user.display_name()}")
 
         if not user.is_valid_password(user_pwd):
-            print("Invalid password for user")
             return None
 
-        print("User authenticated successfully")
         return user
 
     def current_user(self, request=None) -> TypeVar('User'):
