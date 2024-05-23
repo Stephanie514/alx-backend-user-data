@@ -8,7 +8,7 @@ import uuid
 
 class SessionAuth(Auth):
     """
-    manages session authentication.
+    SessionAuth class for managing session authentication.
     """
     user_id_by_session_id = {}
 
@@ -17,10 +17,10 @@ class SessionAuth(Auth):
         Creates a Session ID for a user_id.
 
         Args:
-            user_id (str): user ID for which to create a session.
+            user_id (str): The user ID for which to create a session.
 
         Returns:
-            str: Session ID if creation is successful, otherwise None.
+            str: The Session ID if creation is successful, otherwise None.
         """
         if user_id is None or not isinstance(user_id, str):
             return None
@@ -29,3 +29,19 @@ class SessionAuth(Auth):
         self.user_id_by_session_id[session_id] = user_id
 
         return session_id
+
+    def user_id_for_session_id(self, session_id: str = None) -> str:
+        """
+        This returns User ID based on a Session ID.
+
+        Args:
+            session_id (str): Session ID for which to retrieve the user ID.
+
+        Returns:
+            str: User ID if session_id is found in user_id_by_session_id,
+                 otherwise None.
+        """
+        if session_id is None or not isinstance(session_id, str):
+            return None
+
+        return self.user_id_by_session_id.get(session_id)
