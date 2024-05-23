@@ -19,6 +19,7 @@ class BasicAuth(Auth):
         # Create an instance of BasicAuth
         basic_auth = BasicAuth()
     """
+
     def extract_base64_authorization_header(
         self, authorization_header: str
     ) -> str:
@@ -105,8 +106,8 @@ class BasicAuth(Auth):
             user_pwd (str): The user's password.
 
         Returns:
-            User: The User instance if found and password i
-                  valid, otherwise None.
+            User: The User instance if found and password is valid,
+                  otherwise None.
         """
         if user_email is None or not isinstance(user_email, str):
             return None
