@@ -110,19 +110,28 @@ class BasicAuth(Auth):
                   otherwise None.
         """
         if user_email is None or not isinstance(user_email, str):
+            print("Invalid email")
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
+            print("Invalid password")
             return None
 
+        print(f"Searching for user with email: {user_email}")
         user_list = User.search({"email": user_email})
+        print(f"Search result: {user_list}")
+
         if not user_list:
+            print("No user found")
             return None
 
         user = user_list[0]
+        print(f"Found user: {user.display_name()}")
 
         if not user.is_valid_password(user_pwd):
+            print("Invalid password for user")
             return None
 
+        print("User authenticated successfully")
         return user
 
     def current_user(self, request=None) -> TypeVar('User'):
