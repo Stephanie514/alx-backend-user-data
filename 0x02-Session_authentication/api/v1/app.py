@@ -9,6 +9,7 @@ from flask_cors import CORS
 from api.v1.auth.auth import Auth
 from api.v1.auth.basic_auth import BasicAuth
 from models.user import User
+from flask import abort
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
