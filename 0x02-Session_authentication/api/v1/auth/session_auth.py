@@ -62,8 +62,7 @@ class SessionAuth(Auth):
 
 session_auth = Blueprint('session_auth', __name__)
 
-@session_auth.route('/auth_session/login', 
-                   methods=['POST'], strict_slashes=False)
+@session_auth.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login():
     """Handles user login for session authentication"""
     email = request.form.get('email')
@@ -83,7 +82,8 @@ def login():
     if not user.is_valid_password(password):
         return jsonify({"error": "wrong password"}), 401
 
-    session_id = SessionAuth().create_session(user.id)
+    session_auth_instance = SessionAuth()
+    session_id = session_auth_instance.create_session(user.id)
     user_dict = user.to_json()
     response = jsonify(user_dict)
     session_name = os.getenv("SESSION_NAME")
