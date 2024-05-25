@@ -4,6 +4,7 @@ SessionAuth module
 """
 from flask import Blueprint, request, jsonify
 import uuid
+from flask import Blueprint, request, jsonify, abort
 from models.user import User
 import os
 from api.v1.auth.session_auth import SessionAuth
@@ -35,12 +36,24 @@ def login():
     if not user.is_valid_password(password):
         return jsonify({"error": "wrong password"}), 401
 
-    from api.v1.app import auth  # avoid circular import
-
-    session_id = auth.create_session(user.id)
+    session_auth = SessionAuth()
+    session_id = session_auth.create_session(user.id)
     user_dict = user.to_json()
     response = jsonify(user_dict)
     session_name = os.getenv("SESSION_NAME")
 
     response.set_cookie(session_name, session_id)
     return response
+
+
+@session_auth.route(
+    '/auth_session/logout',
+    methods=['DELETE'],
+    strict_slashes=False
+)
+def logout():
+    """Handles user logout"""
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return jsonify({}), 200

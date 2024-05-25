@@ -7,6 +7,8 @@ from api.v1.auth.auth import Auth
 import uuid
 from models.user import User
 import os
+from .auth import Auth
+import uuid
 
 
 class SessionAuth(Auth):
@@ -58,3 +60,25 @@ class SessionAuth(Auth):
         if user_id is None:
             return None
         return User.get(user_id)
+
+    def session_cookie(self, request=None):
+        """Returns the cookie from a request"""
+        if request is None:
+            return None
+        session_name = os.getenv("SESSION_NAME")
+        return request.cookies.get(session_name)
+
+    def destroy_session(self, request=None):
+        """Destroys a user session / logout"""
+        if request is None:
+            return False
+
+        session_id = self.session_cookie(request)
+        if session_id is None:
+            return False
+
+        if session_id not in self.user_id_by_session_id:
+            return False
+
+        del self.user_id_by_session_id[session_id]
+        return True
