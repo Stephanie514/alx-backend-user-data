@@ -10,7 +10,7 @@ from api.v1.auth.auth import Auth
 from api.v1.auth.basic_auth import BasicAuth
 from models.user import User
 from flask import abort
-from api.v1.auth.session_exp_auth import SessionExpAuth
+
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -22,11 +22,6 @@ AUTH_TYPE = getenv("AUTH_TYPE")
 
 if AUTH_TYPE == "basic_auth":
     auth = BasicAuth()
-else:
-    auth = Auth()
-
-if AUTH_TYPE == "session_exp_auth":
-    auth = SessionExpAuth()
 else:
     auth = Auth()
 
