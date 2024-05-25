@@ -58,35 +58,3 @@ class SessionAuth(Auth):
         if user_id is None:
             return None
         return User.get(user_id)
-
-
-session_auth = Blueprint('session_auth', __name__)
-
-@session_auth.route('/auth_session/login', methods=['POST'], strict_slashes=False)
-def login():
-    """Handles user login for session authentication"""
-    email = request.form.get('email')
-    password = request.form.get('password')
-
-    if not email:
-        return jsonify({"error": "email missing"}), 400
-
-    if not password:
-        return jsonify({"error": "password missing"}), 400
-
-    users = User.search({"email": email})
-    if not users:
-        return jsonify({"error": "no user found for this email"}), 404
-
-    user = users[0]
-    if not user.is_valid_password(password):
-        return jsonify({"error": "wrong password"}), 401
-
-    session_auth_instance = SessionAuth()
-    session_id = session_auth_instance.create_session(user.id)
-    user_dict = user.to_json()
-    response = jsonify(user_dict)
-    session_name = os.getenv("SESSION_NAME")
-
-    response.set_cookie(session_name, session_id)
-    return response
