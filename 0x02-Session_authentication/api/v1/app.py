@@ -9,7 +9,6 @@ from flask_cors import CORS
 from api.v1.auth.auth import Auth
 from api.v1.auth.basic_auth import BasicAuth
 from models.user import User
-from flask import abort
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
@@ -45,13 +44,19 @@ def forbidden(error) -> str:
 
 @app.before_request
 def before_request_handler():
-    """ Before request handler to filter each request """
+    """
+    Before request handler filters each request.
+    checks if the current request path requires authorization.
+    If authorization is required, it checks for the presence of an
+    authorization header or a session cookie.
+    If neither are found, it aborts with a 401 error.
+    """
     if auth is None:
         return
     excluded_paths = [
         '/api/v1/status/',
         '/api/v1/unauthorized/',
-        '/api/v1/forbidden/'
+        '/api/v1/forbidden/',
         '/api/v1/auth_session/login/'
     ]
 
@@ -69,7 +74,12 @@ def before_request_handler():
 
 @app.before_request
 def before_request():
-    """Runs before each request"""
+    """
+    This Runs before each request to check if authorization is required.
+    If the request path is in the excluded paths, no authorization is needed.
+    If both the authorization header and session cookie are missing,
+    it aborts with a 401 error.
+    """
     excluded_paths = ['/api/v1/auth_session/login/']
 
     if request.path in excluded_paths:
