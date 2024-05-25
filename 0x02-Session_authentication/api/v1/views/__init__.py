@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Init.py
+""" DocDocDocDocDocDoc
 """
 from flask import Blueprint
 
@@ -10,6 +10,3 @@ from api.v1.views.users import *
 from api.v1.views.session_auth import *
 
 User.load_from_file()
-
-# Adding the routes for session authentication
-app_views.register_blueprint(session_auth)
