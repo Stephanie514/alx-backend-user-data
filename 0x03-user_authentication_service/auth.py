@@ -143,7 +143,7 @@ class Auth:
         except NoResultFound:
             raise ValueError("User's email {} doesn't exist.".format(email))
 
-        reset_token = str(uuid4())
+        reset_token = _generate_uuid()
         self._db.update_user(user.id, reset_token=reset_token)
         return reset_token
 
@@ -158,14 +158,15 @@ class Auth:
         Raises:
             ValueError: If the reset token is invalid or user is not found.
         """
+        if reset_token is None or password is None:
+            return None
+
         try:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
             raise ValueError("Invalid reset token.")
 
-        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
-        self._db.update_user(
-            user.id,
-            hashed_password=new_hashed_password,
-            reset_token=None
-        )
+        hashed_password = _hash_password(password)
+        self._db.update_user(user.id,
+                             hashed_password=hashed_password,
+                             reset_token=None)
