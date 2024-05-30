@@ -1,52 +1,46 @@
 #!/usr/bin/env python3
 """ Flask app for user authentication """
 
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort
+from Flask import request
 from auth import Auth
 
 app = Flask(__name__)
 AUTH = Auth()
 
 
-# The Root path
-@app.route('/', methods=['GET'], strict_slashes=False)
+@app.route('/', methods=['GET'])
 def home():
     """ Root path """
-    response_payload = {"message": "Welcome"}
-    return jsonify(response_payload)
+    return jsonify({"message": "Bienvenue"})
 
 
-# This Registers a new user
-@app.route('/users', methods=['POST'], strict_slashes=False)
+@app.route('/users', methods=['POST'])
 def create_user():
     """ Create a new user """
     email = request.form.get('email')
     password = request.form.get('password')
     try:
         user = AUTH.register_user(email, password)
-        response_payload = {"email": email, "message": "User created"}
+        response_payload = {"email": email, "message": "user created"}
         return jsonify(response_payload)
-    except Exception:
-        response_payload = {"message": "Email already registered"}
+    except ValueError:
+        response_payload = {"message": "email already registered"}
         return jsonify(response_payload), 400
 
 
-# This logs in a user and returns session ID
 @app.route('/sessions', methods=['POST'])
 def log_in():
     """ Logs in a user and returns session ID """
-    try:
-        email = request.form['email']
-        password = request.form['password']
-    except KeyError:
-        abort(400)
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     if not AUTH.valid_login(email, password):
         abort(401)
 
     session_id = AUTH.create_session(email)
 
-    response_payload = {"email": email, "message": "Logged in"}
+    response_payload = {"email": email, "message": "logged in"}
     response = jsonify(response_payload)
     response.set_cookie("session_id", session_id)
 
