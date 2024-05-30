@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """ Flask application module
 """
+<<<<<<< HEAD
 from flask import Flask, jsonify, abort  # Import necessary Flask modules
 from flask import request  # Import request module from Flask
 from auth import Auth  # Import the Auth class from the auth module
@@ -8,6 +9,15 @@ from auth import Auth  # Import the Auth class from the auth module
 # Initializing the Flask application
 app = Flask(__name__)
 # instance of the Auth class
+=======
+from flask import Flask, jsonify, abort
+from flask import request
+from auth import Auth
+
+# Initializing the Flask application
+app = Flask(__name__)
+# Creating an instance of the Auth class
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
 AUTH = Auth()
 
 
@@ -28,10 +38,17 @@ def create_user():
         Expects form data with 'email' and 'password' fields.
         Returns a JSON response indicating success or failure.
     """
+<<<<<<< HEAD
     email = request.form.get('email')
     password = request.form.get('password')
     try:
         # Attempt to register the user
+=======
+    email = request.form.get('email')  # Getting the email from the form data
+    password = request.form.get('password')
+    try:
+        # Attempting to register the user
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
         user = AUTH.register_user(email, password)
         response_payload = {
             "email": email,
@@ -39,27 +56,41 @@ def create_user():
         }
         return jsonify(response_payload)
     except Exception:
+<<<<<<< HEAD
         # If user already exists, return an error message
+=======
+        # If registration fails (user already exists), return an error message
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
         response_payload = {
             "message": "email already registered"
         }
         return jsonify(response_payload), 400
 
 
+<<<<<<< HEAD
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def log_in():
+=======
+@app.route('/sessions', methods=['POST'])
+def log_in() -> str:
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
     """ Log in an existing user.
         Expects form data with 'email' and 'password' fields.
         Returns a JSON response with the session ID if successful.
     """
     try:
+<<<<<<< HEAD
         email = request.form['email']
+=======
+        email = request.form['email']  # Getting the email from the form data
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
         password = request.form['password']
     except KeyError:
         # If email or password is not provided, return a 400 error
         abort(400)
 
     if not AUTH.valid_login(email, password):
+<<<<<<< HEAD
         # If the login credentials are invalid, return a 401 error
         abort(401)
 
@@ -70,11 +101,24 @@ def log_in():
     msg = {"email": email, "message": "logged in"}
     response = jsonify(msg)
     # Set the session ID as a cookie in the response
+=======
+        # If login credentials are invalid, return a 401 error
+        abort(401)
+
+    # Creating a session for the user and get the session ID
+    session_id = AUTH.create_session(email)
+
+    # Preparing the success message
+    msg = {"email": email, "message": "logged in"}
+    response = jsonify(msg)
+    # Setting the session ID as a cookie in the response
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
     response.set_cookie("session_id", session_id)
 
     return response
 
 
+<<<<<<< HEAD
 @app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def log_out():
     """ Log out the current user.
@@ -161,6 +205,8 @@ def update_password():
         abort(403)
 
 
+=======
+>>>>>>> d53541b68ac3ad5dd6df0e9866068e9c08cbb0d2
 # Running the Flask application
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
