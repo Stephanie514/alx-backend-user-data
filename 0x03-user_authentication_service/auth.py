@@ -125,7 +125,8 @@ class Auth:
 
     def get_reset_password_token(self, email: str) -> str:
         """
-        Generates a reset password token for the user with the given email.
+        Generates a reset password token for the user with the
+        given email.
 
         Args:
             email (str): The user's email address.
@@ -134,14 +135,15 @@ class Auth:
             str: The reset password token.
 
         Raises:
-            ValueError: If the user with the given email is not found.
+           ValueError: If the user with the given email is not found.
+
         """
         try:
             user = self._db.find_user_by(email=email)
         except NoResultFound:
-            raise ValueError
+            raise ValueError("User's email {} doesn't exist.".format(email))
 
-        reset_token = _generate_uuid()
+        reset_token = str(uuid4())
         self._db.update_user(user.id, reset_token=reset_token)
         return reset_token
 
@@ -150,23 +152,20 @@ class Auth:
         Updates the user's password using the reset token.
 
         Args:
-            reset_token (str): The reset token.
-            password (str): The new password.
+             reset_token (str): The reset token.
+             password (str): The new password.
 
         Raises:
             ValueError: If the reset token is invalid or user is not found.
         """
-        if not reset_token or not password:
-            return None
-
         try:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
-            raise ValueError
+            raise ValueError("Invalid reset token.")
 
-        new_hashed_password = _hash_password(password)
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
         self._db.update_user(
             user.id,
-            hashed_password=new_hashed_password.decode('utf-8'),
+            hashed_password=new_hashed_password,
             reset_token=None
         )
